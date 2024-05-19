@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Home Assistant Stream Deck integration."""
+
 from __future__ import annotations
 
 import asyncio
@@ -1939,6 +1940,23 @@ def _on_dial_event_callback(
         
     return dial_event_callback
 
+async def _sync_input_boolean(
+    state_entity_id: str | None,
+    websocket: websockets.WebSocketClientProtocol,
+    state: Literal["on", "off"],
+) -> None:
+    """Sync the input boolean state with the Stream Deck."""
+    if (state_entity_id is not None) and (
+        state_entity_id.split(".")[0] == "input_boolean"
+    ):
+        await call_service(
+            websocket,
+            f"input_boolean.turn_{state}",
+            {},
+            {"entity_id": state_entity_id},
+        )
+
+
 async def _handle_key_press(
     websocket: websockets.WebSocketClientProtocol,
     complete_state: StateDict,
@@ -1948,7 +1966,7 @@ async def _handle_key_press(
 ) -> None:
     if not config._is_on:
         turn_on(config, deck, complete_state)
-        return
+        await _sync_input_boolean(config.state_entity_id, websocket, "on")
 
     def update_all() -> None:
         deck.reset()
@@ -1969,6 +1987,7 @@ async def _handle_key_press(
         return  # to skip the _detached_page reset below
     elif button.special_type == "turn-off":
         turn_off(config, deck)
+        await _sync_input_boolean(config.state_entity_id, websocket, "off")
     elif button.special_type == "light-control":
         assert isinstance(button.special_type_data, dict)
         page = _light_page(
