@@ -759,7 +759,10 @@ class Button(BaseModel, extra="forbid"):  # type: ignore[call-arg]
 
 def _to_filename(id_: str, suffix: str = "") -> Path:
     """Converts an id with ":" and "_" to a filename with optional suffix."""
-    filename = ASSETS_PATH / id_.replace("/", "_").replace(":", "_")
+    filename = Config.get_instance().asset_path / id_.replace("/", "_").replace(
+        ":",
+        "_",
+    )
     return filename.with_suffix(suffix)
 
 
@@ -859,6 +862,9 @@ class Page(BaseModel):
 class Config(BaseModel):
     """Configuration file."""
 
+    _instance = None
+    asset_path: Path = ASSETS_PATH
+
     pages: list[Page] = Field(
         default_factory=list,
         description="A list of `Page`s in the configuration.",
@@ -885,11 +891,24 @@ class Config(BaseModel):
         description="If True, the configuration YAML file will automatically"
         " be reloaded when it is modified.",
     )
+    asset_dir: str = Field(
+        default=ASSETS_PATH,
+        description="The path to the assets directory.",
+    )
+
     _current_page_index: int = PrivateAttr(default=0)
     _is_on: bool = PrivateAttr(default=True)
     _detached_page: Page | None = PrivateAttr(default=None)
     _configuration_file: Path | None = PrivateAttr(default=None)
     _include_files: list[Path] = PrivateAttr(default_factory=list)
+
+    @classmethod
+    def get_instance(cls: type[Config]) -> Config:
+        """Return the singleton instance of the configuration."""
+        if cls._instance is None:
+            cls._instance = cls()
+
+        return cls._instance
 
     @classmethod
     def load(cls: type[Config], fname: Path) -> Config:
@@ -900,6 +919,8 @@ class Config(BaseModel):
             config._configuration_file = fname
             config._include_files = include_files
             config.current_page().sort_dials()
+            config.asset_path = Path(config.asset_dir)
+            cls._instance = config
             return config
 
     def reload(self) -> None:
@@ -1725,7 +1746,7 @@ def _convert_to_grayscale(image: Image.Image) -> Image.Image:
 
 def _download_and_save_mdi(icon_mdi: str) -> Path:
     url = _mdi_url(icon_mdi)
-    filename_svg = ASSETS_PATH / f"{icon_mdi}.svg"
+    filename_svg = Config.get_instance().asset_path / f"{icon_mdi}.svg"
     if filename_svg.exists():
         return filename_svg
     svg_content = _download(url)
@@ -1754,7 +1775,11 @@ def _init_icon(
     """Initialize the icon."""
     if icon_filename is not None:
         icon_path = Path(icon_filename)
-        path = icon_path if icon_path.is_absolute() else ASSETS_PATH / icon_path
+        path = (
+            icon_path
+            if icon_path.is_absolute()
+            else Config.get_instance().asset_path / icon_path
+        )
         icon = Image.open(path)
         # Convert to RGB if needed
         if icon.mode != "RGB":
@@ -1794,7 +1819,10 @@ def _add_text(
         console.log(f"Text size is 0, not drawing text: {text!r}")
         return
     draw = ImageDraw.Draw(image)
-    font = ImageFont.truetype(str(ASSETS_PATH / font_filename), text_size)
+    font = ImageFont.truetype(
+        str(Config.get_instance().asset_path / font_filename),
+        text_size,
+    )
     draw.text(
         (image.width / 2, image.height / 2 + text_offset),
         text=text,
@@ -2287,7 +2315,7 @@ def _url_to_filename(url: str, hash_len: int = 8) -> Path:
     h = hashlib.sha256(f"{domain}{path}".encode()).hexdigest()[:hash_len]
     extension = Path(path).suffix
     filename = f"{domain.replace('.', '_')}-{h}{extension}"
-    return ASSETS_PATH / Path(filename)
+    return Config.get_instance().asset_path / Path(filename)
 
 
 def _scale_hex_color(hex_color: str, scale: float) -> str:
