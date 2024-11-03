@@ -20,11 +20,11 @@ With this Python script, you can control your Home Assistant instance via a Stre
 - 💤 Automatically sync state of `entity_id` to turn display on/off
 - 🎛️ (NEW!) Stream Deck Plus with dial support
 
-[[ToC](#books-table-of-contents)]
+\[[ToC](#books-table-of-contents)\]
 
 **Why choose our solution over others?**
 
-You might have seen a similar project ([`cgiesche/streamdeck-homeassistant`](https://github.com/cgiesche/streamdeck-homeassistant)) on Github before [[†](https://github.com/cgiesche/streamdeck-homeassistant)].
+You might have seen a similar project ([`cgiesche/streamdeck-homeassistant`](https://github.com/cgiesche/streamdeck-homeassistant)) on Github before \[[†](https://github.com/cgiesche/streamdeck-homeassistant)\].
 However, our solution is more versatile and allows you to connect a Stream Deck to the same Linux machine where Home Assistant is running.
 The native Stream Deck software doesn't support Linux, but we've got you covered with the help of the [`python-elgato-streamdeck`](https://github.com/abcminiuser/python-elgato-streamdeck) library.
 If you are looking for some inspiration, check out the [>20 Button Configurations ideas](#bulb-more-than-30-button-configurations-ideas) section below.
@@ -53,6 +53,16 @@ https://user-images.githubusercontent.com/6897215/226788119-6c198ea6-2950-4f95-9
     - [:bookmark_tabs: Page YAML configuration](#bookmark_tabs-page-yaml-configuration)
     - [:white_square_button: Button YAML configuration](#white_square_button-button-yaml-configuration)
 - [:bulb: More than 30 Button Configurations ideas](#bulb-more-than-30-button-configurations-ideas)
+  - [Additional documentation](#additional-documentation)
+    - [Support for Streamdeck Plus :plus:](#support-for-streamdeck-plus-plus)
+      - [Configuration.yaml](#configurationyaml)
+      - [Configuring the Dials](#configuring-the-dials)
+      - [Types of Dial specific attributes](#types-of-dial-specific-attributes)
+    - [Jinja variables](#jinja-variables)
+    - [Touchscreen events](#touchscreen-events)
+    - [Include variables](#include-variables)
+      - [page.yaml](#pageyaml)
+      - [includes/button.yaml](#includesbuttonyaml)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -74,11 +84,11 @@ Follow the steps below to get up and running with Home Assistant on Stream Deck.
 <summary>Click to expand.</summary>
 
 1. In your Home Assistant instance, navigate to **Supervisor** > **Add-on Store**.
-2. Click the menu icon (three vertical dots) in the top right corner and select **Repositories**.
-3. Add the following repository URL: `https://github.com/basnijholt/home-assistant-streamdeck-yaml-addon`.
-4. The add-on should now appear in the **Add-on Store**. Click on "Home Assistant Stream Deck YAML" and then click "Install".
-5. After the installation is complete, configure the add-on using either the `.env` file or the individual configuration options (see the [add-on configuration documentation](https://github.com/basnijholt/home-assistant-streamdeck-yaml-addon#add-on-configuration-gear) for more information).
-6. Start the add-on and check the logs for any errors.
+1. Click the menu icon (three vertical dots) in the top right corner and select **Repositories**.
+1. Add the following repository URL: `https://github.com/basnijholt/home-assistant-streamdeck-yaml-addon`.
+1. The add-on should now appear in the **Add-on Store**. Click on "Home Assistant Stream Deck YAML" and then click "Install".
+1. After the installation is complete, configure the add-on using either the `.env` file or the individual configuration options (see the [add-on configuration documentation](https://github.com/basnijholt/home-assistant-streamdeck-yaml-addon#add-on-configuration-gear) for more information).
+1. Start the add-on and check the logs for any errors.
 
 </details>
 
@@ -88,9 +98,9 @@ Follow the steps below to get up and running with Home Assistant on Stream Deck.
 <summary>Click to expand.</summary>
 
 1. Edit the [`.env.example`](.env.example) file and rename it to `.env`.
-2. Setup a [`configuration.yaml` file (see below)](#configuration).
-3. Install Docker, see [this](https://docs.docker.com/get-docker/) page for instructions
-4. Use the [`basnijholt/home-assistant-streamdeck-yaml:latest`](https://hub.docker.com/r/basnijholt/home-assistant-streamdeck-yaml) Docker image with:
+1. Setup a [`configuration.yaml` file (see below)](#configuration).
+1. Install Docker, see [this](https://docs.docker.com/get-docker/) page for instructions
+1. Use the [`basnijholt/home-assistant-streamdeck-yaml:latest`](https://hub.docker.com/r/basnijholt/home-assistant-streamdeck-yaml) Docker image with:
 
 ```bash
 docker run --rm -it --privileged --env-file=$(pwd)/.env -v $(pwd)/:/app/ basnijholt/home-assistant-streamdeck-yaml:latest
@@ -112,9 +122,9 @@ docker build -t basnijholt/home-assistant-streamdeck-yaml:latest .
 <summary>Click to expand common steps for Linux :penguin:, :apple: MacOS, and :desktop_computer: Windows.</summary>
 
 1. Run `pip install -e .` in the repo folder to install the required dependencies.
-2. Edit the [`.env.example`](.env.example) file and rename it to `.env`.
-3. Setup a [`configuration.yaml` file (see below)](#configuration).
-4. Follow the platform-specific steps for [Linux](#linux), [MacOS](#macos), or [Windows](#windows).
+1. Edit the [`.env.example`](.env.example) file and rename it to `.env`.
+1. Setup a [`configuration.yaml` file (see below)](#configuration).
+1. Follow the platform-specific steps for [Linux](#linux), [MacOS](#macos), or [Windows](#windows).
 
 </details>
 
@@ -163,9 +173,10 @@ For **Windows**, see [this](https://python-elgato-streamdeck.readthedocs.io/en/s
 ## :gear: Configuration
 
 1. Create a `configuration.yaml` file in the same directory.
-2. Choose one of the two usage options:
-  - Option 1: With environment variables. (See [`.env.example`](.env.example) for details)
-  - Option 2: With command-line arguments. (Run `home-assistant-streamdeck-yaml -h` to see the available options)
+1. Choose one of the two usage options:
+
+- Option 1: With environment variables. (See [`.env.example`](.env.example) for details)
+- Option 2: With command-line arguments. (Run `home-assistant-streamdeck-yaml -h` to see the available options)
 
 You're all set! 🎉
 
@@ -327,7 +338,7 @@ Each button can take the following configuration
 <!-- ⚠️ This content is auto-generated by `markdown-code-runner`. -->
 | Variable name           | Allow template   | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | Default   | Type                                                                                                            |
 |:------------------------|:-----------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:----------|:----------------------------------------------------------------------------------------------------------------|
-| `entity_id`             | ✅                | The `entity_id` that this button controls. This entitity will be passed to the `service` when the button is pressed. The button is re-rendered whenever the state of this entity changes.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               |           | `Optional[str]`                                                                                                 |
+| `entity_id`             | ✅                | The `entity_id` that this button controls. This entity will be passed to the `service` when the button is pressed. The button is re-rendered whenever the state of this entity changes.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |           | `Optional[str]`                                                                                                 |
 | `linked_entity`         | ✅                | A secondary entity_id that is used for updating images and states                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |           | `Optional[str]`                                                                                                 |
 | `service`               | ✅                | The `service` that will be called when the button is pressed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |           | `Optional[str]`                                                                                                 |
 | `service_data`          | ✅                | The `service_data` that will be passed to the `service` when the button is pressed. If empty, the `entity_id` will be passed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |           | `Optional[Mapping[str, Any]]`                                                                                   |
@@ -914,3 +925,137 @@ When pressed, the `configuration.yaml` is reloaded.
 
 
 <!-- OUTPUT:END -->
+
+## Additional documentation
+
+### Support for Streamdeck Plus :plus:
+
+#### Configuration.yaml
+
+The `configuration.yaml` for the Streamdeck plus is very similar to the configuration for the regular streamdeck, you only have to add the dials for each page if you want to use them, you can of course also leave it if you don't want to use dials for a specific page.
+An example of a `configuration.yaml` with dials would look like this.
+
+```yaml
+brightness: 100
+auto_reload: true
+state_entity_id: input_boolean.streamdeck
+pages:
+  - name: home
+    buttons: !include includes/home.yaml
+  - name: room_1
+    dials: !include includes/room_1_dials.yaml
+    buttons: !include includes/room_1.yaml
+```
+
+#### Configuring the Dials
+
+The dials also work very similarly to the buttons, you only have to specify an event type such as push if you would like to push the button or turn if you would like to make a turn event.
+Here is an example for a turn event dial that controls a light.
+And shows a ring indicator and the numerical value of the brightness.
+
+```yaml
+- entity_id: light.testing
+  service: light.turn_on
+  service_data:
+    brightness: '{{ dial_value | int}}'
+  icon: >
+    {%- set state = dial_value() -%}
+    {%- set min = dial_attr("min") -%}
+    {%- set max = dial_attr("max") -%}
+    {%- set pct = ((state - min) / (max - min)) * 100 -%}
+    ring:{{ pct | round }}
+  text: >
+    {%- set state = dial_value()  -%}
+    {%- set ha_state = states('light.testing') -%}
+    {%- if ha_state == "off" and dial_value() == 0 -%}
+        {{"off"}}
+    {%- else -%}
+        {{state | int}}
+    {%- endif -%}
+  state_attribute: brightness
+  allow_touchscreen_events: true
+  delay: 0.5
+  dial_event_type: TURN
+  attributes:
+    min: 0
+    max: 100
+    step: 1
+```
+
+#### Types of Dial specific attributes
+
+The attributes until `delay` are the same as for the buttons, but there are some additional attributes that are specific to the dials.
+
+<!-- CODE:START -->
+<!-- from home_assistant_streamdeck_yaml import Dial -->
+<!-- print(Dial.to_markdown_table()) -->
+<!-- CODE:END -->
+<!-- OUTPUT:START -->
+<!-- ⚠️ This content is auto-generated by `markdown-code-runner`. -->
+| Variable name              | Allow template   | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       | Default   | Type                            |
+|:---------------------------|:-----------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:----------|:--------------------------------|
+| `entity_id`                | ✅                | The `entity_id` that this dial controls. This entity will be passed to the `service` when the dial is rotated. The dial is re-rendered whenever the state of this entity changes.                                                                                                                                                                                                                                                                                                                                                                                                                                                 |           | `Optional[str]`                 |
+| `linked_entity`            | ✅                | A secondary entity_id that is used for updating images and states                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |           | `Optional[str]`                 |
+| `service`                  | ✅                | The `service` that will be called when the dial is rotated.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |           | `Optional[str]`                 |
+| `service_data`             | ✅                | The `service_data` that will be passed to the `service` when the dial is rotated. If empty, the `entity_id` will be passed.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |           | `Optional[Mapping[str, Any]]`   |
+| `target`                   | ✅                | The `target` that will be passed to the `service` when the dial is rotated.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |           | `Optional[Mapping[str, Any]]`   |
+| `text`                     | ✅                | The text to display above the dial. If empty, no text is displayed. You might want to add `\n` characters to spread the text over several lines, or use the `\|` character in YAML to create a multi-line string.                                                                                                                                                                                                                                                                                                                                                                                                                 |           | `str`                           |
+| `text_color`               | ✅                | Color of the text. If empty, the color is `white`, unless an `entity_id` is specified, in which case the color is `amber` when the state is `on`, and `white` when it is `off`.                                                                                                                                                                                                                                                                                                                                                                                                                                                   |           | `Optional[str]`                 |
+| `text_size`                | ❌                | Integer size of the text.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | `12`      | `int`                           |
+| `text_offset`              | ❌                | The text's position can be moved up or down from the center of the dial, and this movement is measured in pixels. The value can be positive (for upward movement) or negative (for downward movement).                                                                                                                                                                                                                                                                                                                                                                                                                            |           | `int`                           |
+| `icon`                     | ✅                | The icon filename to display above the dial. Make the path absolute (e.g., `/config/streamdeck/my_icon.png`) or relative to the `assets` directory (e.g., `my_icon.png`). If empty, a icon with `icon_background_color` and `text` is displayed. The icon can be a URL to an image, like `'url:https://www.nijho.lt/authors/admin/avatar.jpg'`, or a `spotify:` icon, like `'spotify:album/6gnYcXVaffdG0vwVM34cr8'`. If the icon is a `spotify:` icon, the icon will be downloaded and cached. The icon can also display a partially complete ring, like a progress bar, or sensor value, like `ring:25` for a 25% complete ring. |           | `Optional[str]`                 |
+| `icon_mdi`                 | ✅                | The Material Design Icon to display above the dial. If empty, no icon is displayed. See https://mdi.bessarabov.com/ for a list of icons. The SVG icon will be downloaded and cached.                                                                                                                                                                                                                                                                                                                                                                                                                                              |           | `Optional[str]`                 |
+| `icon_background_color`    | ✅                | A color (in hex format, e.g., '#FF0000') for the background of the icon (if no `icon` is specified).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | `#000000` | `str`                           |
+| `icon_mdi_color`           | ✅                | The color of the Material Design Icon (in hex format, e.g., '#FF0000'). If empty, the color is derived from `text_color` but is less saturated (gray is mixed in).                                                                                                                                                                                                                                                                                                                                                                                                                                                                |           | `Optional[str]`                 |
+| `icon_gray_when_off`       | ❌                | When specifying `icon` and `entity_id`, if the state is `off`, the icon will be converted to grayscale.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |           | `bool`                          |
+| `delay`                    | ✅                | The delay (in seconds) before the `service` is called. This counts down from the specified time and collects the called turn events and sends the bundled value to Home Assistant after the dial hasn't been turned for the specified time in delay.                                                                                                                                                                                                                                                                                                                                                                              |           | `Union[float, str]`             |
+| `dial_event_type`          | ✅                | The event type of the dial that will trigger the service. Either `DialEventType.TURN` or `DialEventType.PUSH`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |           | `Optional[str]`                 |
+| `state_attribute`          | ✅                | The attribute of the entity which gets used for the dial state.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |           | `Optional[str]`                 |
+| `attributes`               | ✅                | Sets the attributes of the dial. `min`: The minimal value of the dial. `max`: The maximal value of the dial. `step`: the step size by which the value of the dial is increased by on an event.                                                                                                                                                                                                                                                                                                                                                                                                                                    |           | `Optional[Mapping[str, float]]` |
+| `allow_touchscreen_events` | ✅                | Whether events from the touchscreen are allowed, for example set the minimal value on `SHORT` and set maximal value on `LONG`.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |           | `bool`                          |
+
+<!-- OUTPUT:END -->
+
+
+
+### Jinja variables
+
+- `dial_value`: The current local value of the dial (might be different from the states value if a delay is set)
+- `dial_attr`: A function that takes a string as an argument and returns the value of the attribute with that name
+- `states`: The current state of the entity in home assistant
+
+### Touchscreen events
+
+- If your streamdeck has a touchscreen you can switch pages by swiping left or right on the screen.
+- If you set the `allow_touchscreen_events` attribute you can also use the touchscreen to set the value of a dial to the max or min value of that dial by tapping or holding the area of the dial.
+
+### Include variables
+
+>[!NOTE]
+> Include variables work independent from the Streamdeck plus feature and can be used in every supported streamdeck version.
+
+You can also pass variables with the include tag to the included file.
+This can be useful for creating templates and reusing them for multiple entities.
+Here is an example of how you can use include variables in your configuration:
+
+#### page.yaml
+
+```yaml
+- !include {file: includes/button.yaml, vars: {entity_id: light.living_room, icon_mdi:lightbulb, text: Living Room Lights}}
+- !include {file: includes/button.yaml, vars: {entity_id: light.bed, icon_mdi:lightbulb, text: Bed Room Lights}}
+# Other files you might want to include...
+```
+
+Anything that is within the vars dictionary and in the `${variable_name}` format will be replaced upon loading the YAML file when starting the application.
+Other text in the same format but not in the vars dictionary will not be replaced.
+
+#### includes/button.yaml
+
+```yaml
+- entity_id: ${entity_id}
+  service: light.toggle
+  icon_mdi: ${icon_mdi}
+  text: ${text}
+```
+
+In this case `${entity_id}`, `${icon_mdi}`, and `${text}` will be replaced with the values given in the `!include` tag.<F11>
